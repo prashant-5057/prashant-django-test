@@ -1,0 +1,44 @@
+version: "3.3"
+
+services:
+  postgres:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data:cached
+
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    env_file:
+      .env
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+      
+
+volumes:
+  db-data:
+
+
+# version: "2"
+# services:
+#   db:
+#     image: REMOTEURL:latest
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: postgres
+#       POSTGRES_HOST_AUTH_METHOD: trust
+#     ports:
+#       - 5432:5432
